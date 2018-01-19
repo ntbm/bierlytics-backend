@@ -15,15 +15,19 @@ async function database_client_factory () {
   })
   registerModels(client)
   applyRelations(client)
-  await client.sync()
+  await client.sync({
+    force: true // TODO remove
+  })
   return client
 }
 async function registerModels (client) {
     require('../models/user')(client)
     require('../models/group')(client)
+    require('../models/beerbrand')(client)
+    require('../models/beer')(client)
 }
 function applyRelations(client){
-  let {User, Group} = client.models
+  let {User, Group, Beer, BeerBrand} = client.models
   User.belongsToMany(Group, {
     as: 'groups',
     through: 'DrinkingBuddies',
@@ -34,4 +38,10 @@ function applyRelations(client){
     through: 'DrinkingBuddies',
     foreignKey: 'id'
   })
+  Beer.belongsTo(User, {foreignKey: 'userId', targetKey: 'id'})
+  User.hasMany(Beer, {foreignKey: 'userId', sourceKey: 'id'})
+  Beer.belongsTo(BeerBrand, {foreignKey: 'beerBrandId', targetKey: 'id'})
+  BeerBrand.hasMany(Beer, {foreignKey: 'beerBrandId', sourceKey: 'id'})
+  Beer.belongsTo(Group, {foreignKey: 'groupId', targetKey: 'id'})
+  Group.hasMany(Beer, {foreignKey: 'groupId', sourceKey: 'id'})
 }
