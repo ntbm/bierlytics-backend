@@ -16,7 +16,7 @@ async function database_client_factory () {
   registerModels(client)
   applyRelations(client)
   await client.sync({
-    force: true // TODO remove
+    force: process.env.create_db
   })
   return client
 }

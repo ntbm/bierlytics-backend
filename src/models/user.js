@@ -2,6 +2,11 @@ const Sequelize = require('sequelize')
 
 module.exports = (dbClient) => {
   let User = dbClient.define('User', {
+    id: {
+      type: Sequelize.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
+    },
     googleId: {
       type: Sequelize.DataTypes.INTEGER,
       required: true,
