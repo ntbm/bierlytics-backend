@@ -16,7 +16,6 @@ module.exports = function (dbClient) {
       clientSecret: process.env.clientSecret,
       callbackURL: `${process.env.APPURL}/auth/google/return`
     }, (accessToken, refreshToken, profile, done) => {
-      console.log(accessToken, refreshToken, profile)
       dbClient.models.User.findOrCreate({
         where: {
           googleId: profile.id

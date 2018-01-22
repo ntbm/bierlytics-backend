@@ -25,19 +25,22 @@ async function registerModels (client) {
     require('../models/group')(client)
     require('../models/beerbrand')(client)
     require('../models/beer')(client)
+    require('../models/auth-token')(client)
 }
 function applyRelations(client){
-  let {User, Group, Beer, BeerBrand} = client.models
+  let {User, Group, Beer, BeerBrand, AuthToken} = client.models
   User.belongsToMany(Group, {
     as: 'groups',
     through: 'DrinkingBuddies',
-    foreignKey: 'id'
+    foreignKey: 'group_id'
   })
   Group.belongsToMany(User, {
     as: 'members',
     through: 'DrinkingBuddies',
-    foreignKey: 'id'
+    foreignKey: 'user_id'
   })
+  AuthToken.belongsTo(User, {foreignKey: 'userId', targetKey: 'id'})
+  User.hasMany(AuthToken, {foreignKey: 'userId', sourceKey: 'id'})
   Beer.belongsTo(User, {foreignKey: 'userId', targetKey: 'id'})
   User.hasMany(Beer, {foreignKey: 'userId', sourceKey: 'id'})
   Beer.belongsTo(BeerBrand, {foreignKey: 'beerBrandId', targetKey: 'id'})
